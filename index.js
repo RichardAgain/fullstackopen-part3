@@ -5,7 +5,7 @@ const app = express()
 const morgan = require("morgan")
 const cors = require('cors')
 
-app.use(express.static('build/dist'))
+app.use(express.static('dist'))
 
 app.use(cors())
 app.use(express.json())
@@ -72,7 +72,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', logger, (request, response) => {
     const body = request.body
-        
+
     if (!body.name || !body.number ) {
     return response.status(400).json(
         { error: "body does not contain name/number" }
