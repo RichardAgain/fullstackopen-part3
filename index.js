@@ -3,8 +3,9 @@ const express = require("express")
 const app = express()
 
 const morgan = require("morgan")
-
 const cors = require('cors')
+
+app.use(express.static('build/dist'))
 
 app.use(cors())
 app.use(express.json())
@@ -19,6 +20,8 @@ const logger = morgan((tokens, req, res) => {
       JSON.stringify(req.body)
     ].join(' ')
   })
+
+// app.use(logger)
 
 let persons = 
 [
@@ -39,8 +42,8 @@ let persons =
     },
     { 
       "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
+      "name": "Richardo", 
+      "number": "Call me baby 🤙"
     }
 ]
 
@@ -69,16 +72,16 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', logger, (request, response) => {
     const body = request.body
-    
-    if (!body.name && !body.number ) {
-        return response.status(400).json(
-            { error: "body does not contain number/phone" }
-            )
-        } else if (persons.map(p => p.name).includes(body.name)) {
-        return response.status(400).json(
-            { error: "name is already in phonebook" }
-            )
-        } 
+        
+    if (!body.name || !body.number ) {
+    return response.status(400).json(
+        { error: "body does not contain name/number" }
+    )}
+
+    if (persons.map(p => p.name).includes(body.name)) {
+    return response.status(400).json(
+        { error: "name is already in phonebook" }
+    )} 
             
     const person = {
         id: Math.floor(Math.random() * 999999),
@@ -92,7 +95,7 @@ app.post('/api/persons', logger, (request, response) => {
 
 
 
-app.delete('/api/persons/:id', (request, response, next) => {
+app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
     
     const person = persons.find(p => p.id == id)
@@ -101,13 +104,13 @@ app.delete('/api/persons/:id', (request, response, next) => {
         return response.status(404).json(
             { error: "ID not found" }
         )}
-        
-        // response.statusMessage = 'Deleted succesfully'
-        // response.json(person)
-        persons = persons.filter(p => p.id != id)
+    
+    // response.statusMessage = 'Deleted succesfully'
+    // response.json(person)
+    persons = persons.filter(p => p.id != id)
 
-        next()
-    })
+    response.json({ message: "deleted succesfully" })
+})
     
     
 const unknownEndpoint = (request, response) => {
