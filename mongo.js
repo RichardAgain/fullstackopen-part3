@@ -3,8 +3,8 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 
 if (process.argv.length<3) {
-  console.log('give password as argument')
-  process.exit(1)
+    console.log('give password as argument')
+    process.exit(1)
 }
 
 const password = process.argv[2]
@@ -27,18 +27,18 @@ const person = new Person({
 })
 
 const save = () =>
-person.save().then(res => {
-    console.log(`added ${res.name}, number: ${res.number} to the phonebook`)
-    mongoose.connection.close()
-})
+    person.save().then(res => {
+        console.log(`added ${res.name}, number: ${res.number} to the phonebook`)
+        mongoose.connection.close()
+    })
 
 const getAll = () =>
-Person.find({}).then(result => {
-    console.log('Phonebook: ')
-    result.forEach(p => console.log(`${p.name} ${p.number}`))
-    mongoose.connection.close()
-})
+    Person.find({}).then(result => {
+        console.log('Phonebook: ')
+        result.forEach(p => console.log(`${p.name} ${p.number}`))
+        mongoose.connection.close()
+    })
 
-if (process.argv.length == 3) getAll()
+if (process.argv.length === 3) getAll()
 
 else save()
