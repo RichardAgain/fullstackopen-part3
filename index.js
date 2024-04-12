@@ -52,23 +52,19 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.post('/api/persons', logger, (request, response) => {
-  const body = request.body
+app.post('/api/persons', logger, (req, res, next) => {
 
-  if (!body.name || !body.number ) {
-  return response.status(400).json(
-    { error: "body does not contain name/number" }
-  )}
-          
   const person = new Person ({
-    name: body.name,
-    number: body.number
+    name: req.body.name,
+    number: req.body.number
   })
 
-  person.save().then(saved => { 
+  person.save()
+  .then(saved => { 
     console.log(saved)
-    response.json(saved) 
+    res.json(saved) 
   })
+  .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -78,7 +74,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: req.body.number
   }  
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query'})
   .then(updated => {
     res.send(updated)
   })
@@ -103,7 +99,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (err, req, res, next) => {
-  res.status(400).send({ error: err.name + ': ' + err.message })
+  res.status(400).send({ error: err.message })
 }
 
 app.use(errorHandler)
