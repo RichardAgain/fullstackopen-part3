@@ -60,21 +60,21 @@ app.post('/api/persons', logger, (req, res, next) => {
     })
 
     person.save()
-        .then(saved => { 
+        .then(saved => {
             console.log(saved)
-            res.json(saved) 
+            res.json(saved)
         })
         .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
 
-    const person = { 
+    const person = {
         name: req.body.name,
         number: req.body.number
-    }  
+    }
 
-    Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query'})
+    Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' })
         .then(updated => {
             res.send(updated)
         })
@@ -87,7 +87,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .then(deleted => {
             if (deleted) res.status(204).end()
 
-            else res.status(404).send({ "error": "ID not found"})
+            else res.status(404).send({ "error": "ID not found" })
         })
         .catch(err => next(err))
 })
